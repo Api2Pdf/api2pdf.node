@@ -119,7 +119,7 @@ a2pClient.wkhtmltopdfFromUrl('https://www.github.com', inline = true, filename =
 
 ```
 var options = { orientation: 'landscape', pageSize: 'A4');
-a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
+a2pClient.wkhtmltopdfFromUrl('https://www.github.com', options = options).then(function(result) {
     console.log(result);
 });
 ```
@@ -175,7 +175,7 @@ a2pClient.headlessChromeFromUrl('https://www.github.com', inline = true, filenam
 
 ```
 var options = { landscape: true, pageSize: 'A4');
-a2pClient.headlessChromeFromUrl('<p>Hello, World</p>', options = options).then(function(result) {
+a2pClient.headlessChromeFromUrl('https://www.github.com', options = options).then(function(result) {
     console.log(result);
 });
 ```
