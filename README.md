@@ -75,7 +75,7 @@ a2pClient.headlessChromeFromUrl('https://www.github.com')
 **Convert HTML to PDF**
 
 ```
-$a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>').then(function(result) {
+a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>').then(function(result) {
     console.log(result);
 });
 ```    
@@ -83,7 +83,7 @@ $a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>').then(function(result) {
 **Convert HTML to PDF (load PDF in browser window and specify a file name)**
 
 ```
-$a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', inline = true, filename = 'test.pdf').then(function(result) {
+a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', inline = true, filename = 'test.pdf').then(function(result) {
     console.log(result);
 });
 ```
@@ -93,7 +93,7 @@ $a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', inline = true, filename = 
 
 ```
 var options = { orientation: 'landscape', pageSize: 'A4');
-$a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
+a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
     console.log(result);
 });
 ```
@@ -101,7 +101,7 @@ $a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', options = options).then(fu
 **Convert URL to PDF**
 
 ```
-$a2pClient.wkhtmltopdfFromUrl('https://www.github.com').then(function(result) {
+a2pClient.wkhtmltopdfFromUrl('https://www.github.com').then(function(result) {
     console.log(result);
 });
 ```
@@ -109,7 +109,7 @@ $a2pClient.wkhtmltopdfFromUrl('https://www.github.com').then(function(result) {
 **Convert URL to PDF (load PDF in browser window and specify a file name)**
 
 ```
-$a2pClient.wkhtmltopdfFromUrl('https://www.github.com', inline = true, filename = 'test.pdf').then(function(result) {
+a2pClient.wkhtmltopdfFromUrl('https://www.github.com', inline = true, filename = 'test.pdf').then(function(result) {
     console.log(result);
 });
 ```
@@ -119,7 +119,7 @@ $a2pClient.wkhtmltopdfFromUrl('https://www.github.com', inline = true, filename 
 
 ```
 var options = { orientation: 'landscape', pageSize: 'A4');
-$a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
+a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
     console.log(result);
 });
 ```
@@ -131,7 +131,7 @@ $a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', options = options).then(fu
 **Convert HTML to PDF**
 
 ```
-$a2pClient.headlessChromeFromHtml('<p>Hello, World</p>').then(function(result) {
+a2pClient.headlessChromeFromHtml('<p>Hello, World</p>').then(function(result) {
     console.log(result);
 });
 ``` 
@@ -139,7 +139,7 @@ $a2pClient.headlessChromeFromHtml('<p>Hello, World</p>').then(function(result) {
 **Convert HTML to PDF (load PDF in browser window and specify a file name)**
 
 ```
-$a2pClient.headlessChromeFromHtml('<p>Hello, World</p>', inline = true, filename = 'test.pdf').then(function(result) {
+a2pClient.headlessChromeFromHtml('<p>Hello, World</p>', inline = true, filename = 'test.pdf').then(function(result) {
     console.log(result);
 });
 ``` 
@@ -149,7 +149,7 @@ $a2pClient.headlessChromeFromHtml('<p>Hello, World</p>', inline = true, filename
 
 ```
 var options = { landscape: true, pageSize: 'A4');
-$a2pClient.headlessChromeFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
+a2pClient.headlessChromeFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
     console.log(result);
 });
 ```
@@ -157,7 +157,7 @@ $a2pClient.headlessChromeFromHtml('<p>Hello, World</p>', options = options).then
 **Convert URL to PDF**
 
 ```
-$a2pClient.headlessChromeFromUrl('https://www.github.com').then(function(result) {
+a2pClient.headlessChromeFromUrl('https://www.github.com').then(function(result) {
     console.log(result);
 });
 ``` 
@@ -165,7 +165,7 @@ $a2pClient.headlessChromeFromUrl('https://www.github.com').then(function(result)
 **Convert URL to PDF (load PDF in browser window and specify a file name)**
 
 ```
-$a2pClient.headlessChromeFromUrl('https://www.github.com', inline = true, filename = 'test.pdf').then(function(result) {
+a2pClient.headlessChromeFromUrl('https://www.github.com', inline = true, filename = 'test.pdf').then(function(result) {
     console.log(result);
 });
 ``` 
@@ -175,7 +175,7 @@ $a2pClient.headlessChromeFromUrl('https://www.github.com', inline = true, filena
 
 ```
 var options = { landscape: true, pageSize: 'A4');
-$a2pClient.headlessChromeFromUrl('<p>Hello, World</p>', options = options).then(function(result) {
+a2pClient.headlessChromeFromUrl('<p>Hello, World</p>', options = options).then(function(result) {
     console.log(result);
 });
 ```
@@ -193,7 +193,7 @@ You must provide a url to the file. Our engine will consume the file at that URL
 **Convert Microsoft Office Document or Image to PDF**
 
 ```
-$a2pClient.libreofficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx').then(function(result) {
+a2pClient.libreofficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx').then(function(result) {
     console.log(result);
 });
 ``` 
@@ -201,7 +201,7 @@ $a2pClient.libreofficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf
 **Convert Microsoft Office Document or Image to PDF (load PDF in browser window and specify a file name)**
 
 ```
-$a2pClient.libreofficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', inline = true, filename = 'test.pdf').then(function(result) {
+a2pClient.libreofficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', inline = true, filename = 'test.pdf').then(function(result) {
     console.log(result);
 });
 ```
@@ -216,7 +216,7 @@ To use the merge endpoint, supply a list of urls to existing PDFs. The engine wi
 
 ```
 var urls = ['url-to-pdf1', 'url-to-pdf2'];
-$a2pClient.merge(urls).then(function(result) {
+a2pClient.merge(urls).then(function(result) {
     console.log(result);
 });
 ``` 
@@ -225,7 +225,7 @@ $a2pClient.merge(urls).then(function(result) {
 
 ```
 var urls = ['url-to-pdf1', 'url-to-pdf2'];
-$a2pClient.merge(urls, inline = true, filename = 'test.pdf').then(function(result) {
+a2pClient.merge(urls, inline = true, filename = 'test.pdf').then(function(result) {
     console.log(result);
 });
 ``` 
