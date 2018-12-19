@@ -92,7 +92,7 @@ a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', inline = true, filename = '
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
 ```
-var options = { orientation: 'landscape', pageSize: 'A4');
+var options = { orientation: 'landscape', pageSize: 'A4'};
 a2pClient.wkhtmltopdfFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
     console.log(result);
 });
@@ -118,7 +118,7 @@ a2pClient.wkhtmltopdfFromUrl('https://www.github.com', inline = true, filename =
 [View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
 
 ```
-var options = { orientation: 'landscape', pageSize: 'A4');
+var options = { orientation: 'landscape', pageSize: 'A4'};
 a2pClient.wkhtmltopdfFromUrl('https://www.github.com', options = options).then(function(result) {
     console.log(result);
 });
@@ -148,7 +148,7 @@ a2pClient.headlessChromeFromHtml('<p>Hello, World</p>', inline = true, filename 
 [View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
 
 ```
-var options = { landscape: true, pageSize: 'A4');
+var options = { landscape: true, pageSize: 'A4'};
 a2pClient.headlessChromeFromHtml('<p>Hello, World</p>', options = options).then(function(result) {
     console.log(result);
 });
@@ -174,7 +174,7 @@ a2pClient.headlessChromeFromUrl('https://www.github.com', inline = true, filenam
 [View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
 
 ```
-var options = { landscape: true, pageSize: 'A4');
+var options = { landscape: true, pageSize: 'A4'};
 a2pClient.headlessChromeFromUrl('https://www.github.com', options = options).then(function(result) {
     console.log(result);
 });
