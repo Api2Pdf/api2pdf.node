@@ -22,6 +22,7 @@ Resources this API supports:
 - [Headless Chrome](#chrome)
 - [LibreOffice](#libreoffice)
 - [Merge / Concatenate PDFs](#merge)
+- [Helper Methods](#helpers)
 
 ## <a name="authorization"></a>Authorization
 
@@ -229,4 +230,17 @@ a2pClient.merge(urls, inline = true, filename = 'test.pdf').then(function(result
     console.log(result);
 });
 ``` 
-    
+---
+
+## <a name="helpers"></a>Helper Methods
+
+**Delete a PDF on Command with delete(responseId)**
+
+By default, Api2Pdf will automatically delete your PDFs after 24 hours. If you have higher security requirements and need to delete the PDFs at-will, you can do so by calling the `delete(responseId)` method on the Api2Pdf object where `responseId` parameter comes from the responseId attribute in the result.
+
+```
+a2pClient.headlessChromeFromHtml('<p>Hello, World</p>').then(function(result) {
+    console.log(result);
+    a2pClient.delete(result.responseId); //delete pdf by using responseId attribute
+});
+```

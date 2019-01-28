@@ -1,6 +1,6 @@
 {
   "name": "api2pdf",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Api2Pdf is a powerful PDF generation API with no rate limits or file size constraints. Api2Pdf runs on AWS Lambda, a serverless architecture powered by Amazon to scale to millions of requests while being up to 90% cheaper than alternatives. Supports wkhtmltopdf, Headless Chrome, LibreOffice, and PDF Merge. You can also generate barcodes with ZXING (Zebra Crossing)",
   "main": "index.js",
   "scripts": {
@@ -28,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/Api2Pdf/api2pdf.node/issues"
   },
-  "homepage": "https://github.com/Api2Pdf/api2pdf.node#readme"
+  "homepage": "https://github.com/Api2Pdf/api2pdf.node#readme",
+  "dependencies": {
+    "request": "^2.88.0"
+  }
 }

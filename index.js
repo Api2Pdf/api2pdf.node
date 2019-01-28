@@ -75,6 +75,21 @@ module.exports = class Api2Pdf {
     return this._makeRequest(API2PDF_LIBREOFFICE_CONVERT, payload);
   }
 
+  delete(responseId) {
+    var endpoint = API2PDF_BASE_ENDPOINT + `/pdf/${responseId}`;
+    return new Promise((resolve, reject) => {
+      request.delete(endpoint, { headers: { Authorization: this.apiKey } }, function(e, r, body) {
+        var result = JSON.parse(body);
+        if (r.statusCode == 200 && result.success == true) {
+          return resolve(result);
+        }
+        else {
+          return reject(result);
+        }
+      });
+    });
+  }
+
   _makeRequest(endpoint, payload) {
     return new Promise((resolve, reject) => {
       request.post({ url: endpoint, body: JSON.stringify(payload), headers: { Authorization: this.apiKey } }, function(e, r, body) {
