@@ -78,29 +78,38 @@ module.exports = class Api2Pdf {
   delete(responseId) {
     var endpoint = API2PDF_BASE_ENDPOINT + `/pdf/${responseId}`;
     return new Promise((resolve, reject) => {
-      request.delete(endpoint, { headers: { Authorization: this.apiKey } }, function(e, r, body) {
-        var result = JSON.parse(body);
-        if (r.statusCode == 200 && result.success == true) {
-          return resolve(result);
-        }
-        else {
-          return reject(result);
-        }
-      });
+      request.delete(
+        endpoint,
+        { headers: { Authorization: this.apiKey } },
+        this._handleResponse.bind(this, resolve, reject)
+      );
     });
   }
 
   _makeRequest(endpoint, payload) {
     return new Promise((resolve, reject) => {
-      request.post({ url: endpoint, body: JSON.stringify(payload), headers: { Authorization: this.apiKey } }, function(e, r, body) {
-        var result = JSON.parse(body);
-        if (r.statusCode == 200 && result.success == true) {
-          return resolve(result);
-        }
-        else {
-          return reject(result);
-        }
-      });
+      request.post(
+        {
+          url: endpoint, body: JSON.stringify(payload),
+          headers: { Authorization: this.apiKey }
+        },
+        this._handleResponse.bind(this, resolve, reject)
+      );
     });
+  }
+
+  _handleResponse(resolve, reject, e, r, body) {
+    if (e) {
+      return reject(e);
+    }
+    try {
+      var result = JSON.parse(body);
+      if (r.statusCode === 200 && result.success) {
+        return resolve(result);
+      }
+      return reject(result);
+    } catch (e) {
+      return reject(e);
+    }
   }
 };
