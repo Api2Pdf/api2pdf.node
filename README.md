@@ -80,10 +80,10 @@ a2pClient.wkHtmlToPdf('<p>Hello, World</p>').then(function(result) {
 });
 ```    
 
-**Convert HTML to PDF (load PDF in browser window and specify a file name)**
+**Convert HTML to PDF (download PDF as a file and specify a file name)**
 
 ```
-a2pClient.wkHtmlToPdf('<p>Hello, World</p>', inline = false, filename = 'test.pdf').then(function(result) {
+a2pClient.wkHtmlToPdf('<p>Hello, World</p>', { inline: false, filename: 'test.pdf' }).then(function(result) {
     console.log(result);
 });
 ```
@@ -93,7 +93,7 @@ a2pClient.wkHtmlToPdf('<p>Hello, World</p>', inline = false, filename = 'test.pd
 
 ```
 var options = { orientation: 'landscape', pageSize: 'A4'};
-a2pClient.wkHtmlToPdf('<p>Hello, World</p>', inline = false, filename = 'test.pdf', options = options).then(function(result) {
+a2pClient.wkHtmlToPdf('<p>Hello, World</p>', { options: options }).then(function(result) {
     console.log(result);
 });
 ```
@@ -106,10 +106,10 @@ a2pClient.wkUrlToPdf('https://www.github.com').then(function(result) {
 });
 ```
     
-**Convert URL to PDF (load PDF in browser window and specify a file name)**
+**Convert URL to PDF (download PDF as a file and specify a file name)**
 
 ```
-a2pClient.wkUrlToPdf('https://www.github.com', inline = false, filename = 'test.pdf').then(function(result) {
+a2pClient.wkUrlToPdf('https://www.github.com', { inline: false, filename: 'test.pdf' }).then(function(result) {
     console.log(result);
 });
 ```
@@ -119,7 +119,7 @@ a2pClient.wkUrlToPdf('https://www.github.com', inline = false, filename = 'test.
 
 ```
 var options = { orientation: 'landscape', pageSize: 'A4'};
-a2pClient.wkUrlToPdf('https://www.github.com', inline = false, filename = 'test.pdf', options = options).then(function(result) {
+a2pClient.wkUrlToPdf('https://www.github.com', { options: options }).then(function(result) {
     console.log(result);
 });
 ```
@@ -136,10 +136,10 @@ a2pClient.chromeHtmlToPdf('<p>Hello, World</p>').then(function(result) {
 });
 ``` 
     
-**Convert HTML to PDF (load PDF in browser window and specify a file name)**
+**Convert HTML to PDF (download PDF as a file and specify a file name)**
 
 ```
-a2pClient.chromeHtmlToPdf('<p>Hello, World</p>', inline = false, filename = 'test.pdf').then(function(result) {
+a2pClient.chromeHtmlToPdf('<p>Hello, World</p>', { inline: false, filename: 'test.pdf' }).then(function(result) {
     console.log(result);
 });
 ``` 
@@ -149,7 +149,7 @@ a2pClient.chromeHtmlToPdf('<p>Hello, World</p>', inline = false, filename = 'tes
 
 ```
 var options = { landscape: true };
-a2pClient.chromeHtmlToPdf('<p>Hello, World</p>', inline = false, filename = 'test.pdf', options = options).then(function(result) {
+a2pClient.chromeHtmlToPdf('<p>Hello, World</p>', { options: options }).then(function(result) {
     console.log(result);
 });
 ```
@@ -162,10 +162,10 @@ a2pClient.chromeUrlToPdf('https://www.github.com').then(function(result) {
 });
 ``` 
     
-**Convert URL to PDF (load PDF in browser window and specify a file name)**
+**Convert URL to PDF (download PDF as a file and specify a file name)**
 
 ```
-a2pClient.chromeUrlToPdf('https://www.github.com', inline = false, filename = 'test.pdf').then(function(result) {
+a2pClient.chromeUrlToPdf('https://www.github.com', { inline: false, filename: 'test.pdf' }).then(function(result) {
     console.log(result);
 });
 ``` 
@@ -175,7 +175,7 @@ a2pClient.chromeUrlToPdf('https://www.github.com', inline = false, filename = 't
 
 ```
 var options = { landscape: true };
-a2pClient.chromeUrlToPdf('https://www.github.com', inline = false, filename = 'test.pdf', options = options).then(function(result) {
+a2pClient.chromeUrlToPdf('https://www.github.com', { options: options }).then(function(result) {
     console.log(result);
 });
 ```
@@ -211,10 +211,10 @@ a2pClient.libreOfficeAnyToPdf('https://www.api2pdf.com/wp-content/themes/api2pdf
 });
 ``` 
     
-**Convert Microsoft Office Document or Image to PDF (load PDF in browser window and specify a file name)**
+**Convert Microsoft Office Document or Image to PDF (download PDF as a file and specify a file name)**
 
 ```
-a2pClient.libreofficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', inline = false, filename = 'test.pdf').then(function(result) {
+a2pClient.libreofficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', { inline: false, filename: 'test.pdf' }).then(function(result) {
     console.log(result);
 });
 ```
@@ -293,11 +293,9 @@ a2pClient.pdfsharpAddPassword(url, userpassword).then(function(result) {
 
 **Delete a PDF on Command with delete(responseId)**
 
-By default, Api2Pdf will automatically delete your PDFs after 24 hours. If you have higher security requirements and need to delete the PDFs at-will, you can do so by calling the `delete(responseId)` method on the Api2Pdf object where `responseId` parameter comes from the responseId attribute in the result.
+By default, Api2Pdf will delete your generated file 24 hours after it has been generated. For those with high security needs, you may want to delete your file on command. You can do so by making an DELETE api call with the `responseId` attribute that was returned on the original JSON payload.
 
 ```
-a2pClient.headlessChromeFromHtml('<p>Hello, World</p>').then(function(result) {
-    console.log(result);
-    a2pClient.delete(result.responseId); //delete pdf by using responseId attribute
-});
+var responseId = result.ResponseId //from previous api call
+a2pClient.utilityDelete(responseId);
 ```

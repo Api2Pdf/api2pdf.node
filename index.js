@@ -10,136 +10,97 @@ module.exports = class Api2Pdf {
     this.verbose = verbose
   }
 
-  chromeUrlToPdf(url, inline = true, filename = null, options = null) {
-    var payload = { url: url, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
-    if (options != null) {
-      payload['options'] = options
-    }
+  chromeUrlToPdf(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
     return this._makeRequest("/chrome/pdf/url", payload)
   }
 
-  chromeHtmlToPdf(html, inline = true, filename = null, options = null) {
-    var payload = { html: html, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
-    if (options != null) {
-      payload['options'] = options
-    }
+  chromeHtmlToPdf(html, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['html'] = html
     return this._makeRequest("/chrome/pdf/html", payload)
   }
 
-  chromeUrlToImage(url, filename = null, options = null) {
-    var payload = { url: url, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
-    if (options != null) {
-      payload['options'] = options
-    }
+  chromeUrlToImage(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
     return this._makeRequest("/chrome/image/url", payload)
   }
 
-  chromeHtmlToImage(html, filename = null, options = null) {
-    var payload = { html: html, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
-    if (options != null) {
-      payload['options'] = options
-    }
+  chromeHtmlToImage(html, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['html'] = html
     return this._makeRequest("/chrome/image/html", payload)
   }
 
-  wkUrlToPdf(url, inline = true, filename = null, options = null) {
-    var payload = { url: url, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
-    if (options != null) {
-      payload['options'] = options
-    }
+  wkUrlToPdf(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
     return this._makeRequest("/wkhtml/pdf/url", payload)
   }
 
-  wkHtmlToPdf(html, inline = true, filename = null, options = null) {
-    var payload = { html: html, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
-    if (options != null) {
-      payload['options'] = options
-    }
+  wkHtmlToPdf(html, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['html'] = html
     return this._makeRequest("/wkhtml/pdf/html", payload)
   }
 
-  libreOfficeAnyToPdf(url, inline = true, filename = null) {
-    var payload = { url: url, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
+  libreOfficeAnyToPdf(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
     return this._makeRequest("/libreoffice/any-to-pdf", payload)
   }
 
-  libreOfficeThumbnail(url, inline = true, filename = null) {
-    var payload = { url: url, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
+  libreOfficeThumbnail(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
     return this._makeRequest("/libreoffice/thumbnail", payload)
   }
 
-  libreOfficePdfToHtml(url, filename = null) {
-    var payload = { url: url, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
+  libreOfficePdfToHtml(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
     return this._makeRequest("/libreoffice/pdf-to-html", payload)
   }
 
-  libreOfficeHtmlToDocx(url, filename = null) {
-    var payload = { url: url, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
+  libreOfficeHtmlToDocx(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
     return this._makeRequest("/libreoffice/html-to-docx", payload)
   }
 
-  libreOfficeHtmlToXlsx(url, filename = null) {
-    var payload = { url: url, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
+  libreOfficeHtmlToXlsx(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
     return this._makeRequest("/libreoffice/html-to-xlsx", payload)
   }
 
-  pdfsharpMerge(urls, filename = null) {
-    var payload = { urls: urls, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
+  pdfsharpMerge(urls, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['urls'] = urls
     return this._makeRequest("/pdfsharp/merge", payload)
   }
 
-  pdfsharpAddBookmarks(url, bookmarks, inline = true, filename = null) {
-    var payload = { url: url, bookmarks: bookmarks, inline: inline }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
+  pdfsharpAddBookmarks(url, bookmarks, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    payload['bookmarks'] = bookmarks
     return this._makeRequest("/pdfsharp/bookmarks", payload)
   }
 
-  pdfsharpAddPassword(url, userpassword, ownerpassword = null, inline = true, filename = null) {
-    var payload = { url: url, userpassword: userpassword, inline: inline }
-    if (ownerpassword != null) {
-      payload['ownerpassword'] = ownerpassword
-    }
-    if (filename != null) {
-      payload['fileName'] = filename
-    }
+  pdfsharpAddPassword(url, userpassword, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    payload['userpassword'] = userpassword
+    return this._makeRequest("/pdfsharp/password", payload)
+  }
+
+  pdfsharpAddPassword(url, userpassword, ownerpassword, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    payload['userpassword'] = userpassword
+    payload['ownerpassword'] = ownerpassword
     return this._makeRequest("/pdfsharp/password", payload)
   }
 
@@ -166,6 +127,23 @@ module.exports = class Api2Pdf {
     })
 
     req.end()
+  }
+
+  _createBaseOptions(options) {
+    var newOptions = {}
+
+    if (options == null)
+      return { inline: true }
+    
+    if (!('inline' in options)) {
+      newOptions['inline'] = true
+    }
+  
+    if ('filename' in options) {
+      newOptions['fileName'] = options.filename
+    }
+
+    return newOptions
   }
 
   _makeRequest(endpoint, payload, method = "POST") {
