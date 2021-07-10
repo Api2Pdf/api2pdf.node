@@ -1,7 +1,7 @@
 {
   "name": "api2pdf",
-  "version": "1.1.1",
-  "description": "Api2Pdf is a powerful PDF generation API with no rate limits or file size constraints. Api2Pdf runs on Cloud Run, a serverless architecture powered by Google to scale to millions of requests while being up to 90% cheaper than alternatives. Supports wkhtmltopdf, Headless Chrome, LibreOffice, and PDF Merge. You can also generate barcodes with ZXING (Zebra Crossing)",
+  "version": "2.0.0",
+  "description": "This client library is a wrapper for the Api2Pdf.com REST API. See full REST api documentation at https://www.api2pdf.com/documentation/v2. Api2Pdf is a powerful API that supports HTML to PDF, URL to PDF, HTML to Image, URL to Image, Thumbnail / image preview of an Office file, Office files (Word to PDF), HTML to Docx, HTML to excel, PDF to HTML, merge PDFs together, add bookmarks to PDFs, add passwords to PDFs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,6 +21,10 @@
     "headless-chrome",
     "docx-to-pdf",
     "ppt-to-pdf",
+    "html-to-docx",
+    "html-to-xlsx",
+    "pdf-to-html",
+    "docx-image-preview",
     "barcodes"
   ],
   "author": "Api2Pdf <support@api2pdf.com> (https://www.api2pdf.com)",
@@ -28,8 +32,5 @@
   "bugs": {
     "url": "https://github.com/Api2Pdf/api2pdf.node/issues"
   },
-  "homepage": "https://github.com/Api2Pdf/api2pdf.node#readme",
-  "dependencies": {
-    "request": "^2.88.0"
-  }
+  "homepage": "https://github.com/Api2Pdf/api2pdf.node#readme"
 }

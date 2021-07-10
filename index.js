@@ -1,116 +1,198 @@
-"use strict";
+"use strict"
 
-const API2PDF_BASE_ENDPOINT = "https://v2018.api2pdf.com";
-const API2PDF_MERGE = API2PDF_BASE_ENDPOINT + "/merge";
-const API2PDF_WKHTMLTOPDF_HTML = API2PDF_BASE_ENDPOINT + "/wkhtmltopdf/html";
-const API2PDF_WKHTMLTOPDF_URL = API2PDF_BASE_ENDPOINT + "/wkhtmltopdf/url";
-const API2PDF_CHROME_HTML = API2PDF_BASE_ENDPOINT + "/chrome/html";
-const API2PDF_CHROME_URL = API2PDF_BASE_ENDPOINT + "/chrome/url";
-const API2PDF_LIBREOFFICE_CONVERT = API2PDF_BASE_ENDPOINT + "/libreoffice/convert";
-
-const request = require('request');
+const https = require('https')
 
 module.exports = class Api2Pdf {
-  constructor(apiKey) {
-    this.apiKey = apiKey;
+  constructor(apiKey, hostname = "v2.api2pdf.com", port = 443, verbose = false) {
+    this.apiKey = apiKey
+    this.hostname = hostname
+    this.port = port
+    this.verbose = verbose
   }
 
-  headlessChromeFromUrl(url, inline = false, filename = null, options = null) {
-    var payload = { url: url, inlinePdf: inline };
-    if (filename != null) {
-      payload['fileName'] = filename;
-    }
-    if (options != null) {
-      payload['options'] = options;
-    }
-    return this._makeRequest(API2PDF_CHROME_URL, payload);
+  chromeUrlToPdf(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    return this._makeRequest("/chrome/pdf/url", payload)
   }
 
-  headlessChromeFromHtml(html, inline = false, filename = null, options = null) {
-    var payload = { html: html, inlinePdf: inline };
-    if (filename != null) {
-      payload['fileName'] = filename;
-    }
-    if (options != null) {
-      payload['options'] = options;
-    }
-    return this._makeRequest(API2PDF_CHROME_HTML, payload);
+  chromeHtmlToPdf(html, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['html'] = html
+    return this._makeRequest("/chrome/pdf/html", payload)
   }
 
-  wkhtmltopdfFromUrl(url, inline = false, filename = null, options = null) {
-    var payload = { url: url, inlinePdf: inline };
-    if (filename != null) {
-      payload['fileName'] = filename;
-    }
-    if (options != null) {
-      payload['options'] = options;
-    }
-    return this._makeRequest(API2PDF_WKHTMLTOPDF_URL, payload);
+  chromeUrlToImage(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    return this._makeRequest("/chrome/image/url", payload)
   }
 
-  wkhtmltopdfFromHtml(html, inline = false, filename = null, options = null) {
-    var payload = { html: html, inlinePdf: inline };
-    if (filename != null) {
-      payload['fileName'] = filename;
-    }
-    if (options != null) {
-      payload['options'] = options;
-    }
-    return this._makeRequest(API2PDF_WKHTMLTOPDF_HTML, payload);
+  chromeHtmlToImage(html, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['html'] = html
+    return this._makeRequest("/chrome/image/html", payload)
   }
 
-  merge(urls, inline = false, filename = null) {
-    var payload = { urls: urls, inlinePdf: inline };
-    if (filename != null) {
-      payload['fileName'] = filename;
-    }
-    return this._makeRequest(API2PDF_MERGE, payload);
+  wkUrlToPdf(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    return this._makeRequest("/wkhtml/pdf/url", payload)
   }
 
-  libreofficeConvert(url, inline = false, filename = null) {
-    var payload = { url: url, inlinePdf: inline };
-    if (filename != null) {
-      payload['fileName'] = filename;
-    }
-    return this._makeRequest(API2PDF_LIBREOFFICE_CONVERT, payload);
+  wkHtmlToPdf(html, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['html'] = html
+    return this._makeRequest("/wkhtml/pdf/html", payload)
   }
 
-    delete(responseId) {
-    var endpoint = API2PDF_BASE_ENDPOINT + `/pdf/${responseId}`;
-    return new Promise((resolve, reject) => {
-      request.delete(endpoint, { headers: { Authorization: this.apiKey } }, function(e, r, body) {
-        try {
-            var result = JSON.parse(body);
-            if (r.statusCode == 200 && result.success == true) {
-            return resolve(result);
-            }
-            else {
-            return reject(result);
-            }
+  libreOfficeAnyToPdf(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    return this._makeRequest("/libreoffice/any-to-pdf", payload)
+  }
+
+  libreOfficeThumbnail(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    return this._makeRequest("/libreoffice/thumbnail", payload)
+  }
+
+  libreOfficePdfToHtml(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    return this._makeRequest("/libreoffice/pdf-to-html", payload)
+  }
+
+  libreOfficeHtmlToDocx(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    return this._makeRequest("/libreoffice/html-to-docx", payload)
+  }
+
+  libreOfficeHtmlToXlsx(url, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    return this._makeRequest("/libreoffice/html-to-xlsx", payload)
+  }
+
+  pdfsharpMerge(urls, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['urls'] = urls
+    return this._makeRequest("/pdfsharp/merge", payload)
+  }
+
+  pdfsharpAddBookmarks(url, bookmarks, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    payload['bookmarks'] = bookmarks
+    return this._makeRequest("/pdfsharp/bookmarks", payload)
+  }
+
+  pdfsharpAddPassword(url, userpassword, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    payload['userpassword'] = userpassword
+    return this._makeRequest("/pdfsharp/password", payload)
+  }
+
+  pdfsharpAddPassword(url, userpassword, ownerpassword, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    payload['userpassword'] = userpassword
+    payload['ownerpassword'] = ownerpassword
+    return this._makeRequest("/pdfsharp/password", payload)
+  }
+
+  utilityDelete(responseId) {
+    const options = {
+      hostname: this.hostname,
+      port: this.port,
+      path: `/file/${responseId}`,
+      method: "DELETE",
+      headers: {
+        'Authorization': this.apiKey
+      }
+    }
+
+    const req = https.request(options, res => {
+      if (this.verbose)
+        console.log(`statusCode: ${res.statusCode}`)
+
+      res.on('data', d => {})
+    })
+
+    req.on('error', error => {
+      console.error(error)
+    })
+
+    req.end()
+  }
+
+  _createBaseOptions(options) {
+    var newOptions = {}
+
+    if (options == null)
+      return { inline: true }
+    
+    if (!('inline' in options)) {
+      newOptions['inline'] = true
+    }
+  
+    if ('filename' in options) {
+      newOptions['fileName'] = options.filename
+    }
+
+    return newOptions
+  }
+
+  _makeRequest(endpoint, payload, method = "POST") {
+    var parent = this
+    return new Promise(function(resolve, reject) {
+      const data = JSON.stringify(payload)
+
+      if (parent.verbose)
+        console.log(data)
+
+      const options = {
+        hostname: parent.hostname,
+        port: parent.port,
+        path: endpoint,
+        method: method,
+        headers: {
+          'Authorization': parent.apiKey,
+          'Content-Type': 'application/json'
         }
-        catch (e) {
-            return reject(result)
-        };
-      });
-    });
-  }
+      }
+  
+      const req = https.request(options, res => {
+        if (parent.verbose)
+          console.log(`statusCode: ${res.statusCode}`)
+      
+        var body
+        res.on('data', d => {
+          body = d
+        })
 
-  _makeRequest(endpoint, payload) {
-    return new Promise((resolve, reject) => {
-      request.post({ url: endpoint, body: JSON.stringify(payload), headers: { Authorization: this.apiKey } }, function(e, r, body) {
-        try {
-            var result = JSON.parse(body);
-            if (r.statusCode == 200 && result.success == true) {
-            return resolve(result);
+        res.on('end', function() {
+          try {
+            body = JSON.parse(body);
+            if (!body.Success) {
+              reject(body)
             }
-            else {
-            return reject(result);
-            }
-        }
-        catch (e) {
-            return reject(result)
-        };
-      });
-    });
+          } catch(e) {
+              reject(e);
+          }
+          resolve(body);
+        })
+      })
+  
+      req.on('error', error => {
+        reject(error)
+      })
+  
+      req.write(data)
+      req.end()
+    })
   }
-};
+}
