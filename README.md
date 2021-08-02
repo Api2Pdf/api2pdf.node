@@ -214,7 +214,7 @@ a2pClient.libreOfficeAnyToPdf('https://www.api2pdf.com/wp-content/themes/api2pdf
 **Convert Microsoft Office Document or Image to PDF (download PDF as a file and specify a file name)**
 
 ```
-a2pClient.libreofficeConvert('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', { inline: false, filename: 'test.pdf' }).then(function(result) {
+a2pClient.libreOfficeAnyToPdf('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', { inline: false, filename: 'test.pdf' }).then(function(result) {
     console.log(result);
 });
 ```
