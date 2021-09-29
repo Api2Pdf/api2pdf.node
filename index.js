@@ -143,6 +143,10 @@ module.exports = class Api2Pdf {
       newOptions['fileName'] = options.filename
     }
 
+    if ('options' in options) {
+      newOptions['options'] = options.options
+    }
+
     return newOptions
   }
 
