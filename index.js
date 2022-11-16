@@ -137,6 +137,8 @@ module.exports = class Api2Pdf {
     
     if (!('inline' in options)) {
       newOptions['inline'] = true
+    } else {
+      newOptions['inline'] = options.inline
     }
   
     if ('filename' in options) {
@@ -145,6 +147,26 @@ module.exports = class Api2Pdf {
 
     if ('options' in options) {
       newOptions['options'] = options.options
+    }
+
+    if ('useCustomStorage' in options) {
+      newOptions['useCustomStorage'] = options.useCustomStorage
+    }
+
+    if ('storage' in options) {
+      newOptions['storage'] = options.storage
+    }
+
+    if ('enableToc' in options) {
+      newOptions['enableToc'] = options.enableToc
+    }
+
+    if ('tocOptions' in options) {
+      newOptions['tocOptions'] = options.tocOptions
+    }
+
+    if ('extraHTTPHeaders' in options) {
+      newOptions['extraHTTPHeaders'] = options.extraHTTPHeaders
     }
 
     return newOptions
