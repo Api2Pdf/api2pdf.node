@@ -82,9 +82,9 @@ module.exports = class Api2Pdf {
     return this._makeRequest("/pdfsharp/merge", payload)
   }
   
-  pdfsharpCompress(urls, options = null) {
+  pdfsharpCompress(url, options = null) {
     var payload = this._createBaseOptions(options)
-    payload['urls'] = urls
+    payload['url'] = url
     return this._makeRequest("/pdfsharp/compress", payload)
   }
 
