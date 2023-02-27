@@ -287,6 +287,25 @@ a2pClient.pdfsharpAddPassword(url, userpassword).then(function(result) {
     console.log(result);
 });
 ``` 
+
+**Compress existing PDF**
+```
+var url = 'https://LINK-TO-PDF';
+a2pClient.pdfsharpCompress(url).then(function(result) {
+    console.log(result);
+});
+``` 
+
+**Extract pages from existing PDF**
+```
+var url = 'https://LINK-TO-PDF';
+var start = "2";
+var end = null;
+a2pClient.pdfsharpExtractPages(url, start, end).then(function(result) {
+    console.log(result);
+});
+``` 
+
 ---
 
 ## <a name="helpers"></a>Helper Methods

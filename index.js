@@ -88,6 +88,17 @@ module.exports = class Api2Pdf {
     return this._makeRequest("/pdfsharp/compress", payload)
   }
 
+  pdfsharpExtractPages(url, start = null, end = null, options = null) {
+    var payload = this._createBaseOptions(options)
+    payload['url'] = url
+    if (start != null) {
+      payload['start'] = start
+    }
+    if (end != null) {
+      payload['end'] = end
+    }
+  }
+
   pdfsharpAddBookmarks(url, bookmarks, options = null) {
     var payload = this._createBaseOptions(options)
     payload['url'] = url
