@@ -1,320 +1,366 @@
 # api2pdf.node
-Nodejs client for [Api2Pdf REST API](https://www.api2pdf.com/documentation/v2) 
 
-Api2Pdf.com is a powerful REST API for instantly generating PDF and Office documents from HTML, URLs, Microsoft Office Documents (Word, Excel, PPT), Email files, and images. You can generate image preview or thumbnail of a PDF, office document, or email file. The API also supports merge / concatenation of two or more PDFs, setting passwords on PDFs, and adding bookmarks to PDFs. Api2Pdf is a wrapper for popular libraries such as **wkhtmltopdf**, **Headless Chrome**, **PdfSharp**, and **LibreOffice**.
+Node.js bindings for the [Api2Pdf REST API](https://v2.api2pdf.com).
 
-- [Installation](#installation)
-- [Resources](#resources)
-- [Authorization](#authorization)
-- [Usage](#usage)
-- [FAQ](https://www.api2pdf.com/faq)
+Api2Pdf.com is a powerful REST API for document generation, file conversion, and automated content extraction in Node.js applications. It supports HTML to PDF, URL to PDF, HTML to image, URL to image, Microsoft Office document conversion, email and image file conversion, PDF page extraction, PDF password protection, file zipping, barcode and QR code generation, markdown conversion, structured PDF data extraction, and image previews or thumbnails for PDF, office, and email files. Api2Pdf is built on proven engines and libraries including wkhtmltopdf, Headless Chrome, PdfSharp, LibreOffice, and related tools to provide reliable PDF generation, document processing, and file transformation workflows through a single API.
 
+The package preserves the classic flat method names from earlier `api2pdf.node` releases while expanding coverage to the current Api2Pdf Swagger v2 surface.
 
-## <a name="installation"></a>Installation
+## Installation
 
-    npm install --save api2pdf
+```bash
+npm install api2pdf
+```
 
-## <a name="resources"></a>Resources
-
-Resources this API supports:
-
-- [wkhtmltopdf](#wkhtmltopdf)
-- [Headless Chrome](#chrome)
-- [LibreOffice](#libreoffice)
-- [Merge / Concatenate PDFs](#merge)
-- [Helper Methods](#helpers)
-
-## <a name="authorization"></a>Authorization
-
-### Acquire API Key
+## Quick Start
 
 Create an account at [portal.api2pdf.com](https://portal.api2pdf.com/register) to get your API key.
-    
-## <a name="#usage"></a>Usage
 
-### Initialize the Client
+```js
+const Api2Pdf = require("api2pdf")
 
-All usage starts by requiring api2pdf and creating a new object.
+async function run() {
+  const client = new Api2Pdf("YOUR-API-KEY")
 
-    var Api2Pdf = require('api2pdf');   
-    var a2pClient = new Api2Pdf('YOUR-API-KEY');
+  const result = await client.chromeHtmlToPdf("<html><body><h1>Hello, world!</h1></body></html>")
 
-Once you initialize the client, you can make calls like so:
+  if (result.Success) {
+    console.log(result.FileUrl)
+  } else {
+    console.log(result.Error)
+  }
+}
 
+run().catch(console.error)
 ```
-a2pClient.chromeUrlToPdf('https://www.github.com')
-    .then(function(result) {
-        console.log(result); //successful api call
-    }, function(rejected) {
-        console.log(rejected); //an error occurred
+
+## Custom Domains
+
+The default constructor uses `https://v2.api2pdf.com`.
+
+If you want to route requests to a different Api2Pdf domain, pass a full base URL:
+
+```js
+const Api2Pdf = require("api2pdf")
+
+const client = new Api2Pdf("YOUR-API-KEY", "https://your-custom-domain.api2pdf.com")
+```
+
+The package also exposes constants for common base URLs:
+
+```js
+const Api2Pdf = require("api2pdf")
+
+const client = new Api2Pdf("YOUR-API-KEY", Api2Pdf.BaseUrls.V2Xl)
+```
+
+`v2-xl.api2pdf.com` provides much larger compute resources and is intended for heavier workloads, with additional cost compared to the default cluster.
+
+Legacy hostname and port construction still works:
+
+```js
+const client = new Api2Pdf("YOUR-API-KEY", "v2.api2pdf.com", 443)
+```
+
+## Understanding Responses
+
+Most API methods return the standard Api2Pdf JSON payload unless you opt into binary output.
+
+```json
+{
+  "FileUrl": "https://link-to-file-available-for-24-hours",
+  "MbOut": 0.08830547332763672,
+  "Cost": 0.00017251586914062501,
+  "Success": true,
+  "Error": null,
+  "ResponseId": "6e46637a-650d-46d5-af0b-3d7831baccbb"
+}
+```
+
+Important fields:
+
+- `Success`: whether the request succeeded.
+- `Error`: error text when the request fails.
+- `FileUrl`: URL of the generated file when the API returns standard JSON.
+- `ResponseId`: identifier used by `utilityDelete(...)`.
+
+When `outputBinary: true` is supported and enabled, the method resolves to a Node.js `Buffer` instead of JSON.
+
+## Common Request Features
+
+Most flat methods accept an optional `options` object with these common properties:
+
+- `filename`: set the output file name.
+- `inline`: `true` to open in the browser, `false` to trigger download behavior.
+- `useCustomStorage` and `storage`: send the output directly to your own storage target.
+- `outputBinary`: when the endpoint supports it, request binary content instead of the standard JSON payload.
+- `extraHTTPHeaders`: forward custom headers when Api2Pdf fetches a source URL.
+
+Example custom storage configuration:
+
+```js
+const result = await client.chromeHtmlToPdf("<p>Hello World</p>", {
+  useCustomStorage: true,
+  storage: {
+    method: "PUT",
+    url: "https://your-presigned-upload-url"
+  }
+})
+```
+
+## Chrome
+
+### HTML or URL to PDF
+
+```js
+const htmlPdf = await client.chromeHtmlToPdf("<p>Hello World</p>", {
+  options: {
+    delay: 3000,
+    displayHeaderFooter: true,
+    headerTemplate: "<div style=\"font-size:12px;\">Header</div>",
+    footerTemplate: "<div style=\"font-size:12px;\">Footer</div>",
+    landscape: true,
+    preferCSSPageSize: true
+  }
+})
+
+const urlPdf = await client.chromeUrlToPdf("https://www.api2pdf.com", {
+  extraHTTPHeaders: {
+    Authorization: "Bearer token-for-the-source-site"
+  },
+  options: {
+    puppeteerWaitForMethod: "WaitForNavigation",
+    puppeteerWaitForValue: "Load"
+  }
+})
+```
+
+### Markdown to PDF
+
+```js
+const result = await client.chromeMarkdownToPdf("# Invoice\n\nThis PDF was generated from markdown.")
+```
+
+### HTML, URL, or Markdown to Image
+
+```js
+const htmlImage = await client.chromeHtmlToImage("<p>Hello image</p>", {
+  options: {
+    fullPage: true,
+    viewPortOptions: {
+      width: 1440,
+      height: 900
     }
-);
-```
-    
-### Successful Result Format
+  }
+})
 
+const urlImage = await client.chromeUrlToImage("https://www.api2pdf.com")
+
+const markdownImage = await client.chromeMarkdownToImage("# Screenshot\n\nGenerated from markdown.")
+```
+
+## Wkhtmltopdf
+
+```js
+const htmlPdf = await client.wkHtmlToPdf("<p>Hello World</p>", {
+  enableToc: true,
+  options: {
+    orientation: "landscape",
+    pageSize: "Letter"
+  },
+  tocOptions: {
+    disableDottedLines: "true"
+  }
+})
+
+const urlPdf = await client.wkUrlToPdf("https://www.api2pdf.com")
+```
+
+For advanced wkhtmltopdf options, see the [Api2Pdf wkhtmltopdf documentation](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/).
+
+## LibreOffice
+
+Use LibreOffice endpoints for file and Office conversions.
+
+Convert a file URL to PDF:
+
+```js
+const result = await client.libreOfficeAnyToPdf(
+  "https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx"
+)
+```
+
+Generate a thumbnail:
+
+```js
+const result = await client.libreOfficeThumbnail(
+  "https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx"
+)
+```
+
+Convert HTML or a URL to DOCX or XLSX:
+
+```js
+const docx = await client.libreOfficeHtmlToDocx("<html><body><h1>Hello Word</h1></body></html>")
+
+const xlsx = await client.libreOfficeHtmlToXlsx("https://www.api2pdf.com/wp-content/uploads/2021/01/sampleTables.html")
+```
+
+For compatibility with earlier releases, the legacy `libreOfficePdfToHtml(...)` flat method is still available.
+
+## Markitdown
+
+Convert a file URL to markdown:
+
+```js
+const result = await client.markitdownToMarkdown("https://example.com/sample.docx")
+```
+
+## OpenDataLoader
+
+Extract structured content from a PDF URL:
+
+```js
+const json = await client.openDataLoaderPdfToJson("https://example.com/sample.pdf")
+
+const markdown = await client.openDataLoaderPdfToMarkdown("https://example.com/sample.pdf")
+
+const html = await client.openDataLoaderPdfToHtml("https://example.com/sample.pdf")
+```
+
+## PdfSharp
+
+Merge PDFs:
+
+```js
+const result = await client.pdfsharpMerge([
+  "https://LINK-TO-PDF-1",
+  "https://LINK-TO-PDF-2"
+])
+```
+
+Set a password:
+
+```js
+const result = await client.pdfsharpAddPassword(
+  "https://LINK-TO-PDF",
+  "user-password",
+  "owner-password"
+)
+```
+
+Extract a page range:
+
+```js
+const result = await client.pdfsharpExtractPages(
+  "https://LINK-TO-PDF",
+  0,
+  2
+)
+```
+
+For backward compatibility, legacy flat methods such as `pdfsharpAddBookmarks(...)` and `pdfsharpCompress(...)` remain available.
+
+## Zip
+
+Create a zip from multiple files:
+
+```js
+const zipBuffer = await client.zipGenerate(
+  [
     {
-	    'FileUrl': 'https://link-to-file-only-available-for-24-hours',
-	    'MbOut': 0.08830547332763672,
-	    'Cost': 0.00017251586914062501,
-	    'Success': true,
-	    'Error': null,
-	    'ResponseId': '6e46637a-650d-46d5-af0b-3d7831baccbb'
-    }
-    
-### Failed Result Format
-
+      url: "https://example.com/report.pdf",
+      fileName: "docs/report.pdf"
+    },
     {
-	    'Success': false,
-	    'Error': 'some reason for the error',
-	    'ResponseId': '6e46637a-650d-46d5-af0b-3d7831baccbb'
+      url: "https://example.com/image.png",
+      fileName: "images/image.png"
     }
-    
-## <a name="wkhtmltopdf"></a> wkhtmltopdf
-
-**Convert HTML to PDF**
-
-```
-a2pClient.wkHtmlToPdf('<p>Hello, World</p>').then(function(result) {
-    console.log(result);
-});
-```    
-
-**Convert HTML to PDF (download PDF as a file and specify a file name)**
-
-```
-a2pClient.wkHtmlToPdf('<p>Hello, World</p>', { inline: false, filename: 'test.pdf' }).then(function(result) {
-    console.log(result);
-});
-```
-    
-**Convert HTML to PDF (use object for advanced wkhtmltopdf settings)**
-[View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
-
-```
-var options = { orientation: 'landscape', pageSize: 'A4'};
-a2pClient.wkHtmlToPdf('<p>Hello, World</p>', { options: options }).then(function(result) {
-    console.log(result);
-});
+  ],
+  {
+    outputBinary: true
+  }
+)
 ```
 
-**Convert URL to PDF**
+`zipFiles(...)` is provided as an alias to `zipGenerate(...)`.
 
-```
-a2pClient.wkUrlToPdf('https://www.github.com').then(function(result) {
-    console.log(result);
-});
-```
-    
-**Convert URL to PDF (download PDF as a file and specify a file name)**
+## Zebra
 
-```
-a2pClient.wkUrlToPdf('https://www.github.com', { inline: false, filename: 'test.pdf' }).then(function(result) {
-    console.log(result);
-});
-```
-    
-**Convert URL to PDF (use object for advanced wkhtmltopdf settings)**
-[View full list of wkhtmltopdf options available.](https://www.api2pdf.com/documentation/advanced-options-wkhtmltopdf/)
+Generate a barcode or QR code:
 
-```
-var options = { orientation: 'landscape', pageSize: 'A4'};
-a2pClient.wkUrlToPdf('https://www.github.com', { options: options }).then(function(result) {
-    console.log(result);
-});
+```js
+const imageBuffer = await client.zebraGenerateBarcode("QR_CODE", "https://www.api2pdf.com", {
+  width: 300,
+  height: 300,
+  showLabel: false,
+  outputBinary: true
+})
 ```
 
----
+`zebraGenerate(...)` is provided as an alias to `zebraGenerateBarcode(...)`.
 
-## <a name="chrome"></a>Headless Chrome
+For supported Zebra format values, see the [Api2Pdf Zebra documentation](https://www.api2pdf.com/documentation/advanced-options-zxing-zebra-crossing-barcodes/).
 
-**Convert HTML to PDF**
+## Utilities
 
-```
-a2pClient.chromeHtmlToPdf('<p>Hello, World</p>').then(function(result) {
-    console.log(result);
-});
-``` 
-    
-**Convert HTML to PDF (download PDF as a file and specify a file name)**
+Delete a generated file:
 
-```
-a2pClient.chromeHtmlToPdf('<p>Hello, World</p>', { inline: false, filename: 'test.pdf' }).then(function(result) {
-    console.log(result);
-});
-``` 
-    
-**Convert HTML to PDF (use options for advanced Headless Chrome settings)**
-[View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
+```js
+const pdf = await client.chromeHtmlToPdf("<p>Hello World</p>")
 
-```
-var options = { landscape: true };
-a2pClient.chromeHtmlToPdf('<p>Hello, World</p>', { options: options }).then(function(result) {
-    console.log(result);
-});
+await client.utilityDelete(pdf.ResponseId)
 ```
 
-**Convert URL to PDF**
+Check status or remaining balance:
 
-```
-a2pClient.chromeUrlToPdf('https://www.github.com').then(function(result) {
-    console.log(result);
-});
-``` 
-    
-**Convert URL to PDF (download PDF as a file and specify a file name)**
-
-```
-a2pClient.chromeUrlToPdf('https://www.github.com', { inline: false, filename: 'test.pdf' }).then(function(result) {
-    console.log(result);
-});
-``` 
-    
-**Convert URL to PDF (use keyword arguments for advanced Headless Chrome settings)**
-[View full list of Headless Chrome options available.](https://www.api2pdf.com/documentation/advanced-options-headless-chrome/)
-
-```
-var options = { landscape: true };
-a2pClient.chromeUrlToPdf('https://www.github.com', { options: options }).then(function(result) {
-    console.log(result);
-});
-```
-    
-**Convert HTML to Image**
-
-```
-a2pClient.chromeHtmlToImage('<p>Hello, World</p>').then(function(result) {
-    console.log(result);
-});
-``` 
-
-**Convert URL to Image**
-
-```
-a2pClient.chromeUrlToImage('https://www.github.com').then(function(result) {
-    console.log(result);
-});
-``` 
----
-
-## <a name="libreoffice"></a>LibreOffice
-
-Convert any office file to PDF, image file to PDF, email file to PDF, HTML to Word, HTML to Excel, and PDF to HTML. Any file that can be reasonably opened by LibreOffice should be convertible. Additionally, we have an endpoint for generating a *thumbnail* of the first page of your PDF or Office Document. This is great for generating an image preview of your files to users.
-
-You must provide a url to the file. Our engine will consume the file at that URL and convert it.
-
-**Convert Microsoft Office Document or Image to PDF**
-
-```
-a2pClient.libreOfficeAnyToPdf('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx').then(function(result) {
-    console.log(result);
-});
-``` 
-    
-**Convert Microsoft Office Document or Image to PDF (download PDF as a file and specify a file name)**
-
-```
-a2pClient.libreOfficeAnyToPdf('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx', { inline: false, filename: 'test.pdf' }).then(function(result) {
-    console.log(result);
-});
+```js
+const status = await client.utilityStatus()
+const balance = await client.utilityBalance()
 ```
 
-**Thumbnail or Image Preview of a PDF or Office Document or Email file**
+## Working With Files
 
+Save binary output to disk:
+
+```js
+const fs = require("node:fs/promises")
+
+const pdfBuffer = await client.chromeHtmlToPdf("<p>Hello World</p>", {
+  outputBinary: true
+})
+
+await fs.writeFile("output.pdf", pdfBuffer)
 ```
-a2pClient.libreOfficeThumbnail('https://www.api2pdf.com/wp-content/themes/api2pdf/assets/samples/sample-word-doc.docx').then(function(result) {
-    console.log(result);
-});
-``` 
 
-**Convert HTML to Microsoft Word or Docx**
+Use JSON output when you want a hosted file URL instead:
 
+```js
+const result = await client.chromeHtmlToPdf("<p>Hello World</p>")
+console.log(result.FileUrl)
 ```
-a2pClient.libreOfficeHtmlToDocx('http://www.api2pdf.com/wp-content/uploads/2021/01/sampleHtml.html').then(function(result) {
-    console.log(result);
-});
-``` 
 
-**Convert HTML to Microsoft Excel or Xlsx**
+## Development
 
+The repo uses a lightweight CommonJS layout:
+
+- `index.js` as the package entrypoint
+- `src/` for the shipping library
+- `test/` for regression and contract-style tests
+
+Run the test suite with:
+
+```bash
+npm test
 ```
-a2pClient.libreOfficeHtmlToXlsx('http://www.api2pdf.com/wp-content/uploads/2021/01/sampleTables.html').then(function(result) {
-    console.log(result);
-});
-``` 
 
-**Convert PDF to HTML**
+Preview the published package contents with:
 
+```bash
+npm run pack:check
 ```
-a2pClient.libreOfficePdfToHtml('http://www.api2pdf.com/wp-content/uploads/2021/01/1a082b03-2bd6-4703-989d-0443a88e3b0f-4.pdf').then(function(result) {
-    console.log(result);
-});
-``` 
-    
----
-    
-## <a name="merge"></a>PdfSharp - Merge / Concatenate Two or More PDFs, Add bookmarks to pdfs, add passwords to pdfs
 
-To use the merge endpoint, supply a list of urls to existing PDFs. The engine will consume all of the PDFs and merge them into a single PDF, in the order in which they were provided in the list.
+## Resources
 
-**Merge PDFs from list of URLs to existing PDFs**
-
-```
-var urls = ['url-to-pdf1', 'url-to-pdf2'];
-a2pClient.pdfsharpMerge(urls).then(function(result) {
-    console.log(result);
-});
-``` 
-
-**Add bookmarks to existing PDF**
-
-```
-var url = 'https://LINK-TO-PDF';
-var bookmarks = [
-    { Page: 0, Title: "Introduction"},
-    { Page: 1, Title: "Second page"}
-]
-a2pClient.pdfsharpAddBookmarks(url, bookmarks).then(function(result) {
-    console.log(result);
-});
-``` 
-
-**Add password to existing PDF**
-```
-var url = 'https://LINK-TO-PDF';
-var userpassword = "hello";
-a2pClient.pdfsharpAddPassword(url, userpassword).then(function(result) {
-    console.log(result);
-});
-``` 
-
-**Compress existing PDF**
-```
-var url = 'https://LINK-TO-PDF';
-a2pClient.pdfsharpCompress(url).then(function(result) {
-    console.log(result);
-});
-``` 
-
-**Extract pages from existing PDF**
-```
-var url = 'https://LINK-TO-PDF';
-var start = "2";
-var end = null;
-a2pClient.pdfsharpExtractPages(url, start, end).then(function(result) {
-    console.log(result);
-});
-``` 
-
----
-
-## <a name="helpers"></a>Helper Methods
-
-**Delete a PDF on Command with delete(responseId)**
-
-By default, Api2Pdf will delete your generated file 24 hours after it has been generated. For those with high security needs, you may want to delete your file on command. You can do so by making an DELETE api call with the `responseId` attribute that was returned on the original JSON payload.
-
-```
-var responseId = result.ResponseId //from previous api call
-a2pClient.utilityDelete(responseId);
-```
+- [Api2Pdf documentation](https://v2.api2pdf.com)
+- [Api2Pdf FAQ](https://www.api2pdf.com/faq)

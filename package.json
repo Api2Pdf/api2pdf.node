@@ -1,10 +1,30 @@
 {
   "name": "api2pdf",
-  "version": "2.0.3",
-  "description": "This client library is a wrapper for the Api2Pdf.com REST API. See full REST api documentation at https://www.api2pdf.com/documentation/v2. Api2Pdf is a powerful API that supports HTML to PDF, URL to PDF, HTML to Image, URL to Image, Thumbnail / image preview of an Office file, Office files (Word to PDF), HTML to Docx, HTML to excel, PDF to HTML, merge PDFs together, add bookmarks to PDFs, add passwords to PDFs",
-  "main": "index.js",
+  "version": "2.1.0",
+  "description": "Node.js client for the Api2Pdf REST API with support for Chrome, wkhtmltopdf, LibreOffice, Markitdown, OpenDataLoader, PdfSharp, Zip, Zebra, and utility endpoints.",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "pack:check": "npm pack --dry-run"
   },
   "repository": {
     "type": "git",
@@ -25,7 +45,10 @@
     "html-to-xlsx",
     "pdf-to-html",
     "docx-image-preview",
-    "barcodes"
+    "barcodes",
+    "markdown-to-pdf",
+    "zip-files",
+    "qr-code"
   ],
   "author": "Api2Pdf <support@api2pdf.com> (https://www.api2pdf.com)",
   "license": "MIT",
